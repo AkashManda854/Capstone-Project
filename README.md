@@ -2,6 +2,14 @@
 
 A modern, responsive Django-based e-commerce platform designed for celebrating Indian festivals with dynamic festival themes, product management, and comprehensive shopping features.
 
+## 🌐 Live Deployment
+
+**🚀 Get Your Live Link:** See [QUICK_DEPLOY.md](QUICK_DEPLOY.md) for step-by-step deployment instructions to Render.com (FREE)
+
+**Live Demo Link:** [Deploy your own in 10 minutes!](QUICK_DEPLOY.md)
+
+> **Note:** To get your own live deployment link, follow the simple guide in `QUICK_DEPLOY.md`. The application is ready to deploy to Render.com, Railway.app, or PythonAnywhere with just a few clicks!
+
 ## 🎉 Features
 
 ### Core Features

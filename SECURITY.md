@@ -12,8 +12,8 @@
 - **Status:** ✅ Secure
 
 #### Pillow Library
-- **Previous Version:** 10.1.0 (Buffer overflow vulnerability)
-- **Updated Version:** 10.3.0 (Vulnerability patched)
+- **Previous Version:** 10.1.0 → 10.3.0 → **12.1.1** (Final patched version)
+- **Vulnerabilities Fixed:** Buffer overflow, Out-of-bounds write in PSD loading
 - **Status:** ✅ Secure
 
 ---
@@ -58,9 +58,16 @@
 ### 6. Pillow Buffer Overflow
 - **Severity:** 🔴 High
 - **Affected Versions:** Pillow < 10.3.0
-- **Fixed in:** Pillow 10.3.0
-- **Our Version:** 10.3.0 ✅
+- **Fixed in:** Pillow 10.3.0+
+- **Our Version:** 12.1.1 ✅
 - **Description:** Buffer overflow vulnerability in image processing.
+
+### 7. Pillow Out-of-Bounds Write in PSD Loading
+- **Severity:** 🔴 High
+- **Affected Versions:** Pillow >= 10.3.0, < 12.1.1
+- **Fixed in:** Pillow 12.1.1
+- **Our Version:** 12.1.1 ✅
+- **Description:** Out-of-bounds write vulnerability when loading PSD (Photoshop) images.
 
 ---
 
@@ -184,7 +191,7 @@ Django==4.2.26         # Latest patched version
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.0
 django-cors-headers==4.3.1
-Pillow==10.3.0        # Latest patched version
+Pillow==12.1.1        # Latest patched version (Out-of-bounds write fix)
 psycopg2-binary==2.9.9
 python-decouple==3.8
 ```

@@ -1,13 +1,26 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 from shop.models import Festival, Category, Product, Banner, Coupon
 from datetime import date, timedelta
 from decimal import Decimal
+import requests
+from io import BytesIO
 
 User = get_user_model()
 
 class Command(BaseCommand):
     help = 'Populate database with sample data for testing'
+
+    def download_image(self, url, name):
+        """Download image from URL and return ContentFile"""
+        try:
+            response = requests.get(url, timeout=10)
+            if response.status_code == 200:
+                return ContentFile(response.content, name=name)
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f'Could not download image: {e}'))
+        return None
 
     def handle(self, *args, **kwargs):
         self.stdout.write('Creating sample data...')
@@ -110,7 +123,7 @@ class Command(BaseCommand):
         decor_cat = Category.objects.get(slug='home-decor')
         gifts_cat = Category.objects.get(slug='gifts')
 
-        # Create Products
+        # Create Products with images
         products_data = [
             {
                 'name': 'Traditional Silk Saree',
@@ -123,7 +136,8 @@ class Command(BaseCommand):
                 'rating': Decimal('4.5'),
                 'is_featured': True,
                 'is_trending': True,
-                'festivals': [dussehra, diwali]
+                'festivals': [dussehra, diwali],
+                'image_url': 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop'
             },
             {
                 'name': 'Designer Kurta Set',
@@ -135,7 +149,8 @@ class Command(BaseCommand):
                 'stock': 75,
                 'rating': Decimal('4.3'),
                 'is_featured': True,
-                'festivals': [dussehra]
+                'festivals': [dussehra],
+                'image_url': 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&h=400&fit=crop'
             },
             {
                 'name': 'Smart LED TV 43 inch',
@@ -148,7 +163,8 @@ class Command(BaseCommand):
                 'rating': Decimal('4.6'),
                 'is_featured': True,
                 'is_trending': True,
-                'festivals': [dussehra, diwali]
+                'festivals': [dussehra, diwali],
+                'image_url': 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=400&fit=crop'
             },
             {
                 'name': 'Wireless Bluetooth Headphones',
@@ -160,7 +176,8 @@ class Command(BaseCommand):
                 'stock': 100,
                 'rating': Decimal('4.4'),
                 'is_trending': True,
-                'festivals': [dussehra]
+                'festivals': [dussehra],
+                'image_url': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop'
             },
             {
                 'name': 'Decorative Diya Set (12 pieces)',
@@ -172,7 +189,8 @@ class Command(BaseCommand):
                 'stock': 200,
                 'rating': Decimal('4.7'),
                 'is_featured': True,
-                'festivals': [diwali]
+                'festivals': [diwali],
+                'image_url': 'https://images.unsplash.com/photo-1605792657660-596af9009e82?w=400&h=400&fit=crop'
             },
             {
                 'name': 'Festive Wall Hangings',
@@ -183,7 +201,8 @@ class Command(BaseCommand):
                 'category': decor_cat,
                 'stock': 80,
                 'rating': Decimal('4.2'),
-                'festivals': [dussehra, diwali]
+                'festivals': [dussehra, diwali],
+                'image_url': 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&h=400&fit=crop'
             },
             {
                 'name': 'Premium Dry Fruits Gift Box',
@@ -196,7 +215,8 @@ class Command(BaseCommand):
                 'rating': Decimal('4.8'),
                 'is_featured': True,
                 'is_trending': True,
-                'festivals': [dussehra, diwali]
+                'festivals': [dussehra, diwali],
+                'image_url': 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=400&h=400&fit=crop'
             },
             {
                 'name': 'Handcrafted Jewelry Set',
@@ -208,16 +228,27 @@ class Command(BaseCommand):
                 'stock': 60,
                 'rating': Decimal('4.5'),
                 'is_trending': True,
-                'festivals': [dussehra]
+                'festivals': [dussehra],
+                'image_url': 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop'
             },
         ]
 
         for prod_data in products_data:
             festivals = prod_data.pop('festivals', [])
+            image_url = prod_data.pop('image_url', None)
+            
             product, created = Product.objects.get_or_create(
                 slug=prod_data['slug'],
                 defaults=prod_data
             )
+            
+            # Download and save image if product was just created
+            if created and image_url:
+                image_file = self.download_image(image_url, f'{product.slug}.jpg')
+                if image_file:
+                    product.image.save(f'{product.slug}.jpg', image_file, save=True)
+                    self.stdout.write(f'  - Downloaded image for {product.name}')
+            
             if created and festivals:
                 product.festivals.set(festivals)
         

@@ -220,9 +220,7 @@
         {% if product.image %}
             <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
         {% else %}
-            <div class="product-image">
-                <i class="fas fa-image fa-3x"></i>
-            </div>
+            <img src="https://via.placeholder.com/400x400/FF6B35/FFFFFF?text={{ product.name|slice:':15'|urlencode }}" alt="{{ product.name }}" class="product-image">
         {% endif %}
 
         {% if product.discount_price %}
@@ -284,9 +282,7 @@
         {% if product.image %}
             <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
         {% else %}
-            <div class="product-image">
-                <i class="fas fa-image fa-3x"></i>
-            </div>
+            <img src="https://via.placeholder.com/400x400/FF6B35/FFFFFF?text={{ product.name|slice:':15'|urlencode }}" alt="{{ product.name }}" class="product-image">
         {% endif %}
 
         <span class="product-badge">Trending</span>

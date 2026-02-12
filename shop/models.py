@@ -50,7 +50,7 @@ class Product(models.Model):
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     festivals = models.ManyToManyField(Festival, related_name='products', blank=True)
-    image = models.ImageField(upload_to='products/')
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
     stock = models.IntegerField(default=0)
     rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     is_featured = models.BooleanField(default=False)

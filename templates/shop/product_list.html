@@ -9,10 +9,13 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
 
     .products-header h1 {
         color: var(--primary-color);
+        flex: 1;
     }
 
     .filters {
@@ -167,8 +170,27 @@
 
 {% block content %}
 <div class="products-header">
-    <h1><i class="fas fa-shopping-bag"></i> All Products</h1>
+    <h1>
+        <i class="fas fa-shopping-bag"></i> 
+        {% if search_query %}
+            Search Results for "{{ search_query }}"
+        {% else %}
+            All Products
+        {% endif %}
+    </h1>
+    {% if search_query %}
+        <a href="{% url 'product_list' %}" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Clear Search
+        </a>
+    {% endif %}
 </div>
+
+{% if search_query %}
+<div style="background: #e7f3ff; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border-left: 4px solid var(--primary-color);">
+    <strong><i class="fas fa-info-circle"></i> Search Results:</strong> 
+    Found {{ products|length }} product{{ products|length|pluralize }} matching "{{ search_query }}"
+</div>
+{% endif %}
 
 <div class="filters">
     <form method="get">
@@ -231,9 +253,7 @@
             {% if product.image %}
                 <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
             {% else %}
-                <div class="product-image">
-                    <i class="fas fa-image fa-3x"></i>
-                </div>
+                <img src="https://via.placeholder.com/400x400/FF6B35/FFFFFF?text={{ product.name|slice:':15'|urlencode }}" alt="{{ product.name }}" class="product-image">
             {% endif %}
 
             {% if product.discount_price %}
